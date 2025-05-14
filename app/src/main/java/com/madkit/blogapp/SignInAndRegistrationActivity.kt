@@ -52,6 +52,7 @@ class SignInAndRegistrationActivity : AppCompatActivity() {
                     auth.signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener {login->
                         if(login.isSuccessful){
                             startActivity(Intent(this, MainActivity::class.java))
+                            finish()
                         }else{
                             Toast.makeText(this, "Please enter correct details", Toast.LENGTH_SHORT).show()
                         }
@@ -73,6 +74,7 @@ class SignInAndRegistrationActivity : AppCompatActivity() {
                         .addOnCompleteListener { register ->
                             if (register.isSuccessful) {
                                 val user = auth.currentUser
+                                auth.signOut()
                                 user?.let {
                                     val userReference = database.getReference("users")
                                     val userId = user.uid
@@ -83,9 +85,8 @@ class SignInAndRegistrationActivity : AppCompatActivity() {
                                         storage.reference.child("profile_image/$userId.jpg")
                                     storageReferance.putFile(imageUri!!)
                                     startActivity(Intent(this, WelcomeActivity::class.java))
+                                    finish()
                                 }
-                            } else {
-
                             }
                         }
                 }
