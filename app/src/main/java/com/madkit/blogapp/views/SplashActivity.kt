@@ -1,15 +1,13 @@
-package com.madkit.blogapp
+package com.madkit.blogapp.views
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
-import com.madkit.blogapp.register.WelcomeActivity
+import com.madkit.blogapp.R
+import com.madkit.blogapp.views.register.WelcomeActivity
 
 class SplashActivity : AppCompatActivity() {
 

@@ -1,12 +1,10 @@
-package com.madkit.blogapp
+package com.madkit.blogapp.views
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.service.autofill.UserData
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -14,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.madkit.blogapp.databinding.ActivitySignInAndRegistrationBinding
-import com.madkit.blogapp.register.WelcomeActivity
+import com.madkit.blogapp.views.register.WelcomeActivity
 
 class SignInAndRegistrationActivity : AppCompatActivity() {
     private val binding: ActivitySignInAndRegistrationBinding by lazy {
@@ -46,17 +44,22 @@ class SignInAndRegistrationActivity : AppCompatActivity() {
             binding.btnLogin.setOnClickListener {
                 val loginEmail = binding.edtemail.text.toString()
                 val loginPassword = binding.edtPassword.text.toString()
-                if(loginEmail.isEmpty() || loginPassword.isEmpty()){
+                if (loginEmail.isEmpty() || loginPassword.isEmpty()) {
                     Toast.makeText(this, "Please fill all the detail", Toast.LENGTH_SHORT).show()
-                }else{
-                    auth.signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener {login->
-                        if(login.isSuccessful){
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
-                        }else{
-                            Toast.makeText(this, "Please enter correct details", Toast.LENGTH_SHORT).show()
+                } else {
+                    auth.signInWithEmailAndPassword(loginEmail, loginPassword)
+                        .addOnCompleteListener { login ->
+                            if (login.isSuccessful) {
+                                startActivity(Intent(this, MainActivity::class.java))
+                                finish()
+                            } else {
+                                Toast.makeText(
+                                    this,
+                                    "Please enter correct details",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                    }
                 }
             }
         } else if (action == "register") {
@@ -78,12 +81,23 @@ class SignInAndRegistrationActivity : AppCompatActivity() {
                                 user?.let {
                                     val userReference = database.getReference("users")
                                     val userId = user.uid
-                                    val userData = UserData(name, email)
+                                    val userData = com.madkit.blogapp.model.UserData(name, email)
                                     userReference.child(userId).setValue(userData)
 
                                     val storageReferance =
                                         storage.reference.child("profile_image/$userId.jpg")
-                                    storageReferance.putFile(imageUri!!)
+                                    storageReferance.putFile(imageUri!!).addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            storageReferance.downloadUrl.addOnCompleteListener { imageUri ->
+                                                if(imageUri.isSuccessful){
+                                                    val imageUrl = imageUri.result.toString()
+                                                    userReference.child(userId).child("profileImage")
+                                                        .setValue(imageUrl)
+                                                }
+
+                                            }
+                                        }
+                                    }
                                     startActivity(Intent(this, WelcomeActivity::class.java))
                                     finish()
                                 }

@@ -1,15 +1,9 @@
-package com.madkit.blogapp.register
+package com.madkit.blogapp.views.register
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.firebase.auth.FirebaseAuth
-import com.madkit.blogapp.MainActivity
-import com.madkit.blogapp.R
-import com.madkit.blogapp.SignInAndRegistrationActivity
+import com.madkit.blogapp.views.SignInAndRegistrationActivity
 import com.madkit.blogapp.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
